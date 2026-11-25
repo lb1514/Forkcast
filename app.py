@@ -33,6 +33,14 @@ def load_data():
 
 restaurants, rules = load_data()
 
+# Food-spot check on the MAIN category: removes places like theatres or paint studios
+# that only list a bar as a secondary category.
+FOOD_WORDS = r"restaurant|\bcaf[eé]\b|coffee|bakery|\bdiner\b|pizz|\bbar\b|\bpub\b|brewery|\bdeli\b|bistro|sandwich|bagel|donut|dessert|ice cream|\btea\b|juice|salad|food court|steak house|gastropub|yogurt|cookie|cake|pie shop"
+MAIN_FOOD = FOOD_WORDS + (r"|lounge|tavern|\bgrill\b|\bfood\b|kitchen|eatery|buffet|cafeteria|noodle|pasta|cr[eê]perie|brew|beer|wine"
+                          r"|taqueria|tapas|bbq|barbecue|poke|ramen|sushi|dumpling|soup|chocolate|night ?club|hookah|izakaya"
+                          r"|smoothie|gelato|pastry|patisserie|wings|chicken|burger|hot dog|falafel|kebab|shawarma|halal|espresso")
+restaurants = restaurants[restaurants["main_category"].fillna("").str.lower().str.contains(MAIN_FOOD, regex=True)].copy()
+
 # Names for the LDA themes (pos_0 and neg_6 are Google-translated text, so they are not used)
 POS_THEMES = {
     "pos_1": "quick & convenient service", "pos_2": "burgers & beer", "pos_3": "seafood & trying new things",
